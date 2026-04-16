@@ -7,7 +7,7 @@ services:
     env_file:
       - .env
     volumes:
-      - mariadb_data:/var/lib/mysql
+      - /home/scarlucc/data/mariadb:/var/lib/mysql
     networks:
       - inception_network
     restart: always
@@ -18,7 +18,7 @@ services:
     env_file:
       - .env
     volumes:
-      - wordpress_data:/var/www/html 
+      - /home/scarlucc/data/wordpress:/var/www/html
     networks:
       - inception_network
     depends_on:
@@ -31,16 +31,12 @@ services:
     ports:
       - "443:443"
     volumes:
-      - wordpress_data:/var/www/html
+      - /home/scarlucc/data/wordpress:/var/www/html
     networks:
       - inception_network
     depends_on:
       - wordpress
     restart: always
-
-volumes:
-  mariadb_data: #indirizzo cartella volume in locale
-  wordpress_data: #indirizzo cartella volume in locale
 
 networks:
   inception_network:

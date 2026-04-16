@@ -6,12 +6,38 @@
 
 ## Project Setup
 
-<!-- struttura directory -->
+.
+├── Makefile
+├── README.md
+├── USER_DOC.md
+├── DEV_DOC.md
+├── secrets/
+│   ├── credentials.txt
+│   ├── db_password.txt
+│   └── db_root_password.txt
+└── srcs/
+    ├── .env
+    ├── docker-compose.yml
+    └── requirements/
+        ├── mariadb/
+        │   ├── Dockerfile
+        │   ├── .dockerignore
+        │   ├── conf/
+        │   └── tools/
+        ├── nginx/
+        │   ├── Dockerfile
+        │   ├── .dockerignore
+        │   ├── conf/
+        │   └── tools/
+        └── wordpress/
+            ├── Dockerfile
+            ├── .dockerignore
+            ├── conf/
+            └── tools/
 
 
 ## Environment Configuration
 
-<!-- .env, secrets -->
 The project uses a `.env` file located in the `srcs/` directory to store environment variables.
 
 This file contains configuration values such as:
@@ -72,13 +98,27 @@ docker-compose down
 
 ## Data Persistence
 
-<!-- aggiornare quando configuro volumi -->
-<!-- volumi -->
+The project uses bind mounts to ensure data persistence on the host machine.
 
-## Project Structure
+According to the project requirements, all data must be stored in:
+`/home/<login>/data/`
 
-<!-- aggiornare quando creo cartelle -->
-<!-- spiegazione srcs/requirements -->
+Two directories are used:
+
+* `/home/<login>/data/mariadb`: stores the database files
+* `/home/<login>/data/wordpress`: stores the WordPress website files
+
+These directories are mounted into the containers:
+
+* MariaDB: `/var/lib/mysql`
+* WordPress: `/var/www/html`
+* NGINX: `/var/www/html` (read-only access to website files)
+
+This ensures that:
+
+* Data is preserved even if containers are stopped or removed
+* The host machine has direct access to the stored data
+
 
 ## Project Structure
 
