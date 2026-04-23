@@ -1,0 +1,6 @@
+ssh inception@10.12.250.189
+per collegarsi tramite ssh 
+
+sudo ss -tulpn | grep :80
+per controllare se qualcosa sta usando la porta 80 (per esempio nginx)
+

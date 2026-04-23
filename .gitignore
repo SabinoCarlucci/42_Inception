@@ -1,0 +1,13 @@
+# Ignora il file delle variabili d'ambiente
+.env
+
+# Ignora tutta la cartella dei segreti (password)
+secrets/
+
+# Ignora le cartelle dei dati (i volumi di MariaDB e WordPress)
+# Non vogliamo caricare l'intero database su GitHub!
+data/
+
+# Ignora file temporanei o di sistema
+.DS_Store
+*.swp
