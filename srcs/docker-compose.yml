@@ -6,17 +6,11 @@ services:
     image: mariadb:inception
     container_name: mariadb
     networks:
-      - inception-network
+      - inception_network
     volumes:
       - mariadb_data:/var/lib/mysql
-    environment:
-      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD_FILE: /run/secrets/db_password
-    secrets:
-      - db_root_password
-      - db_password
+    env_file:
+      - .env
     restart: always
 
   # wordpress:
@@ -48,6 +42,9 @@ services:
 networks:
   inception_network:
     driver: bridge
+
+volumes:
+  mariadb_data:
 
 secrets:
   db_root_password:
