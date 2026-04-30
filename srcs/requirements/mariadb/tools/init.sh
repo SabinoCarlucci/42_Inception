@@ -26,18 +26,30 @@ done
 echo "MariaDB is ready!"
 
 # Run setup SQL: create database and users
-echo "Running setup SQL..."
-mysql --socket=/run/mysqld/mysqld.sock -u root << EOF
+if [ ! -d "/var/lib/mysql/${MYSQL_DATABASE}" ]; then
+    echo "Running setup SQL..."
+    mysql --socket=/run/mysqld/mysqld.sock -u root << EOF #connessione senza password permessa durante setup
 CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE};
 CREATE USER IF NOT EXISTS '${MYSQL_USER}'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';
 GRANT ALL PRIVILEGES ON ${MYSQL_DATABASE}.* TO '${MYSQL_USER}'@'%';
 ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}';
 FLUSH PRIVILEGES;
 EOF
+    echo "Setup SQL completed."
 
+    # Spegnimento pulito usando la nuova password appena impostata
+    mysqladmin --socket=/run/mysqld/mysqld.sock -u root -p"${MYSQL_ROOT_PASSWORD}" shutdown
+else
+
+#vecchia versione
 # Shut down temporary server
-echo "Shutting down temporary MariaDB..."
-mysqladmin --socket=/run/mysqld/mysqld.sock -u root -p"${MYSQL_ROOT_PASSWORD}" shutdown
+#echo "Shutting down temporary MariaDB..."
+#mysqladmin --socket=/run/mysqld/mysqld.sock -u root -p"${MYSQL_ROOT_PASSWORD}" shutdown
+
+    echo "Database already exists, skipping setup."
+    # Se esiste già, spegniamo il server temporaneo (usando la password) per riavviarlo normalmente
+    mysqladmin --socket=/run/mysqld/mysqld.sock -u root -p"${MYSQL_ROOT_PASSWORD}" shutdown
+fi
 
 # Wait for shutdown
 wait "$pid" || true

@@ -12,6 +12,11 @@ RUN mkdir -p /var/run/mysqld \
     && chown -R mysql:mysql /var/run/mysqld \
     && chmod 755 /var/run/mysqld
 
+# creazione cartella log
+RUN mkdir -p /var/run/mysqld /var/log/mysql \
+    && chown -R mysql:mysql /var/run/mysqld /var/log/mysql /var/lib/mysql \
+    && chmod 777 /var/run/mysqld
+
 #copia da... a... 
 COPY ./conf/50-server.cnf /etc/mysql/mariadb.conf.d/
 	#copia il file init.sh da tools e mettilo nell'immagine docker in /init.sh
