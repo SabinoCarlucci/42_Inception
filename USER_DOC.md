@@ -27,13 +27,13 @@ All services run in separate Docker containers and communicate through a private
 To build and start all services:
 
 ```
-docker-compose up --build
+docker compose up --build
 ```
 
 To run in background:
 
 ```
-docker-compose up -d --build
+docker compose up -d --build
 ```
 
 ---
@@ -43,13 +43,13 @@ docker-compose up -d --build
 To stop the containers:
 
 ```
-docker-compose down
+docker compose down
 ```
 
 To stop and remove volumes (⚠️ deletes all data):
 
 ```
-docker-compose down -v
+docker compose down -v
 ```
 
 ### Cleaning Persistent Data (Troubleshooting)
@@ -198,12 +198,24 @@ Inside the MariaDB container:
 ```
 mysql -u root -p
 ```
-
-Then:
+When prompted, type root password, then to verify that the database is properly initialized::
 
 ```
 SHOW DATABASES;
 ```
+The expected output should include the WordPress database defined in the .env file.
+
+To check database content:
+
+```
+USE <database_name>; SHOW TABLES;
+```
+
+```
+SELECT user, host FROM mysql.user;
+```
+
+This allows verification that the database and users have been correctly created.
 
 ---
 
@@ -221,6 +233,31 @@ Directories:
 * `wordpress/`: website files
 
 This ensures that data is not lost when containers are stopped or removed.
+
+### Volume Verification
+
+To verify that data is correctly stored using Docker volumes:
+
+1. List volumes:
+
+```bash
+docker volume ls
+```
+
+2. Inspect the MariaDB volume:
+
+```bash
+docker volume inspect <volume_name>
+```
+
+Ensure that the mount point corresponds to:
+
+```
+/home/<login>/data/
+```
+
+This confirms that the project complies with the requirement of storing persistent data on the host machine.
+
 
 ---
 
@@ -240,5 +277,39 @@ This ensures that data is not lost when containers are stopped or removed.
 
 * Verify ownership of mounted directories
 * Ensure correct user (mysql / www-data)
+
+### Network Debugging (Advanced)
+
+If services cannot communicate with each other (e.g., WordPress cannot connect to MariaDB), you can perform network checks from inside containers.
+
+1. Access the WordPress container
+```
+docker exec -it wordpress bash
+```
+
+2. Install temporary debugging tools
+```
+apt update && apt install -y iputils-ping netcat-openbsd
+```
+
+3. Test connectivity to MariaDB
+
+Check DNS and network:
+```
+ping mariadb
+```
+
+Check if the database port is reachable:
+```
+nc -zv mariadb 3306
+```
+
+Expected result:
+```
+Connection to mariadb (...) 3306 port succeeded!
+```
+
+Note:
+These tools are installed only temporarily and will be removed when the container is rebuilt.
 
 ---

@@ -5,7 +5,7 @@ RUN apt-get update && apt-get install -y \
 # motore PHP-FPM (esegue codice PHP)
 	php8.2-fpm \
 # permette connessione database
-	php8.2-mysql \ 
+	php8.2-mysql \
 #consente richieste HTTP (API, plugin, download)
 	php8.2-curl \
 #gestione immagini (resize, thumbnail, ecc)

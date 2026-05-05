@@ -90,7 +90,6 @@ To stop the project:
 docker-compose down
 ```
 
-
 ## Managing Containers
 
 <!-- docker commands -->
@@ -197,7 +196,57 @@ Additional tools:
 
 These extensions ensure compatibility with WordPress core features and plugins.
 
+#### WordPress and Database Connection
 
+WordPress connects to the MariaDB container using environment variables defined in the `.env` file.
+
+The connection parameters are injected into the `wp-config.php` file at container startup:
+
+* `DB_NAME`: database name
+* `DB_USER`: database user
+* `DB_PASSWORD`: database password
+* `DB_HOST`: hostname of the database server
+
+The `DB_HOST` is set to `mariadb`, which corresponds to the name of the MariaDB service in `docker-compose.yml`.
+
+Docker automatically resolves this name to the correct container IP through the internal network.
+
+This allows WordPress to communicate with the database without exposing any ports externally.
+
+The connection flow is:
+
+WordPress (PHP-FPM) → Docker Network → MariaDB (port 3306)
+
+### Internal Networking
+
+Docker provides an internal DNS system that allows containers to communicate using service names.
+
+For example:
+
+* The WordPress container connects to MariaDB using:
+  * `DB_HOST=mariadb`
+
+Docker automatically resolves `mariadb` to the correct container IP address.
+
+This removes the need for manual IP management and ensures stable communication between services.
+
+### Connection Testing
+
+To verify connectivity between containers:
+
+```
+docker exec -it wordpress bash
+apt update && apt install -y netcat-openbsd
+nc -zv mariadb 3306
+```
+
+
+A successful connection confirms that:
+
+* The Docker network is working
+* The database service is reachable
+
+Note: This test only checks network connectivity, not authentication.
 
 ### MariaDB Service
 

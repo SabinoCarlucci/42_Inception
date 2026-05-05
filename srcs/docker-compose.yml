@@ -3,7 +3,7 @@ services:
   mariadb:
     build: 
       context: requirements/mariadb
-    image: mariadb:inception
+    image: mariadb:inception #custom tag to avoid latest
     container_name: mariadb
     networks:
       - inception_network
@@ -13,18 +13,20 @@ services:
       - .env
     restart: always
 
-  # wordpress:
-  #   build: ./requirements/wordpress
-  #   container_name: wordpress
-  #   env_file:
-  #     - .env
-  #   volumes:
-  #     - /home/scarlucc/data/wordpress:/var/www/html
-  #   networks:
-  #     - inception_network
-  #   depends_on:
-  #     - mariadb
-  #   restart: always
+  wordpress:
+    build:
+      context: requirements/wordpress
+    image: wordpress:inception #custom tag to avoid latest
+    container_name: wordpress
+    networks:
+      - inception_network
+    volumes:
+      - wordpress_data:/var/www/html
+    env_file:
+      - .env
+    depends_on:
+      - mariadb
+    restart: always
 
   # nginx:
   #   build: ./requirements/nginx
@@ -50,6 +52,13 @@ volumes:
       type: none
       o: bind
       device: /home/${LOGIN}/data/mariadb
+
+  wordpress_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/${LOGIN}/data/wordpress
 
 secrets:
   db_root_password:
