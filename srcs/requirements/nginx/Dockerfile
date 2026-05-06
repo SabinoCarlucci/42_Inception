@@ -1,8 +1,21 @@
 FROM debian:bookworm
 
-#qual e' la sintassi?
-COPY index.html /usr/share/nginx/html/
+RUN apt-get update && apt-get install -y \
+    nginx \
+    openssl \
+    && rm -rf /var/lib/apt/lists/*
 
-#document port usage (just document!)
-EXPOSE 80
+# Crea certificato SSL self-signed
+RUN mkdir -p /etc/nginx/ssl && \
+    openssl req -x509 -nodes -days 365 \
+    -newkey rsa:2048 \
+    -keyout /etc/nginx/ssl/nginx.key \
+    -out /etc/nginx/ssl/nginx.crt \
+    -subj "/C=IT/ST=Italy/L=Florence/O=42/OU=student/CN=localhost"
 
+# Copia config
+COPY conf/nginx.conf /etc/nginx/nginx.conf
+
+EXPOSE 443
+
+CMD ["nginx", "-g", "daemon off;"]

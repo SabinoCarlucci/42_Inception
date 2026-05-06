@@ -48,8 +48,8 @@ require_once ABSPATH . 'wp-settings.php';
 EOF
 
     # Set secure permissions
-    find "$WP_PATH" -type d -exec chmod 750 {} \;
-    find "$WP_PATH" -type f -exec chmod 640 {} \;
+    find "$WP_PATH" -type d -exec chmod 755 {} \;
+    find "$WP_PATH" -type f -exec chmod 644 {} \;
     chown -R www-data:www-data "$WP_PATH"
 
     echo "WordPress setup complete."

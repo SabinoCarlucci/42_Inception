@@ -22,6 +22,45 @@ All services run in separate Docker containers and communicate through a private
 
 ---
 
+## NGINX Configuration
+
+NGINX acts as the only entry point to the infrastructure and serves the website over HTTPS.
+
+It is configured to:
+
+- Listen on port 443 (HTTPS only)
+- Use a self-signed SSL certificate
+- Serve files from the WordPress volume
+- Forward PHP requests to the WordPress container via FastCGI
+
+### FastCGI Communication
+
+NGINX communicates with WordPress using:
+```
+fastcgi_pass wordpress:9000;
+```
+
+This works because all containers are on the same Docker network, where:
+
+- `wordpress` is the service name
+- Docker provides automatic DNS resolution
+
+### Shared Volume
+
+NGINX and WordPress share the same volume:
+```
+/var/www/html
+```
+
+This allows:
+
+- WordPress to write files
+- NGINX to serve them
+
+Without this shared volume, the website would not work.
+
+---
+
 ## Starting the Project
 
 To build and start all services:
@@ -35,6 +74,19 @@ To run in background:
 ```
 docker compose up -d --build
 ```
+
+### First Startup Behavior (Wordpress)
+
+On first startup:
+
+- WordPress files are downloaded
+- `wp-config.php` is generated
+- Database connection is configured
+
+On subsequent restarts:
+
+- Setup is skipped if files already exist
+- Existing data is preserved via Docker volumes
 
 ---
 
@@ -101,6 +153,22 @@ https://scarlucc.42.fr
 ```
 
 Make sure your domain is correctly mapped to your local IP (via `/etc/hosts`).
+
+### Local Domain Configuration
+
+You must map your domain to your local machine by editing:
+```
+/etc/hosts
+```
+
+
+Example:
+```
+127.0.0.1 <your_login>.42.fr
+```
+
+
+Without this step, the website will not be reachable.
 
 ---
 
@@ -267,6 +335,33 @@ This confirms that the project complies with the requirement of storing persiste
 
 * Check NGINX container logs
 * Verify domain configuration
+
+### 403 Forbidden Error (NGINX)
+
+If you see a 403 Forbidden error, it is usually caused by incorrect file permissions.
+
+Example error in logs:
+```
+Permission denied
+```
+
+#### Fix
+
+Inside the WordPress container:
+```
+docker exec -it wordpress bash
+chown -R www-data:www-data /var/www/html
+chmod -R 755 /var/www/html
+```
+
+
+Then restart the project:
+```
+docker compose down
+docker compose up
+```
+
+This ensures that NGINX can read WordPress files correctly.
 
 ### Database connection errors
 
