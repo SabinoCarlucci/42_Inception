@@ -61,6 +61,36 @@ Without this shared volume, the website would not work.
 
 ---
 
+## Using the Makefile
+
+The project can be managed using the Makefile.
+
+Start all services:
+
+    make
+
+Build containers and start all services:
+
+    make up
+
+Stop containers:
+
+    make down
+
+Stop containers and remove Docker volumes:
+
+    make clean
+
+Completely reset the project (removes persistent data):
+
+    make fclean
+
+Rebuild everything from scratch:
+
+    make re
+
+---
+
 ## Starting the Project
 
 To build and start all services:
@@ -153,6 +183,48 @@ https://scarlucc.42.fr
 ```
 
 Make sure your domain is correctly mapped to your local IP (via `/etc/hosts`).
+
+The website is served exclusively over HTTPS using a self-signed TLS certificate generated inside the NGINX container.
+
+The browser may display a warning because the certificate is self-signed. This is expected.
+
+NGINX listens only on port 443.
+
+HTTP access on port 80 is intentionally disabled to comply with the project requirements.
+
+### Login as user
+
+To login as a user, open your browser and go :
+```
+https://scarlucc.42.fr/wp-login.php
+```
+
+and login using 
+```
+WP_USER=*****
+WP_USER_PASSWORD=*****
+```
+as found in .env file.
+
+Users can comment on posts.
+
+Users' comments need approval from admin.
+
+### Login as admin
+
+To login as admin, open your browser and go :
+```
+https://scarlucc.42.fr/wp-admin
+```
+
+and login using 
+```
+WP_ADMIN_USER=*****
+WP_ADMIN_PASSWORD=****
+```
+as found in .env file.
+
+Admins can approve, reject and change users' comments.
 
 ### Local Domain Configuration
 

@@ -25,8 +25,15 @@ RUN apt-get update && apt-get install -y \
 	wget \
 # alternativa a wget / richieste HTTP
 	curl \
+#client MySQL/MariaDB
+	mariadb-client \
 && ln -s /usr/sbin/php-fpm8.2 /usr/local/bin/php-fpm \
 && rm -rf /var/lib/apt/lists/*
+
+# Install WP-CLI
+RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
+    && chmod +x wp-cli.phar \
+    && mv wp-cli.phar /usr/local/bin/wp
 
 # Create WordPress directory
 WORKDIR /var/www/html

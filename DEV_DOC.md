@@ -172,9 +172,27 @@ At startup, a setup script:
 * Downloads WordPress if not already present
 * Creates the `wp-config.php` file using environment variables
 * Sets correct file permissions
-* Ensures idempotency by checking if WordPress is already installed
+* Installs WordPress automatically after checking if it's already installed
+* Creates the administrator account
+* Creates an additional user account
 
 PHP-FPM runs as the main process and listens on port 9000, allowing NGINX to communicate with it.
+
+#### WordPress Environment Variables
+
+Additional WordPress installation settings are defined in the .env file.
+
+Example:
+
+WP_TITLE=inception
+
+WP_ADMIN_USER=scarlucc42
+WP_ADMIN_PASSWORD=1234
+WP_ADMIN_EMAIL=scarlucc@student.42.fr
+
+WP_USER=user42
+WP_USER_EMAIL=user42@student.42.fr
+WP_USER_PASSWORD=123
 
 #### PHP Extensions
 
@@ -286,5 +304,3 @@ The initialization script ensures that:
 * The server is restarted in normal mode
 
 A waiting mechanism is used to ensure that MariaDB is fully ready before executing SQL commands.
-
-

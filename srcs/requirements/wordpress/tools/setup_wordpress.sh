@@ -57,6 +57,38 @@ else
     echo "WordPress already initialized, skipping setup."
 fi
 
+# Wait for MariaDB
+echo "Waiting for MariaDB connection..."
+
+until mysqladmin ping -h"$WORDPRESS_DB_HOST" --silent; do
+	sleep 2
+done
+
+# Install WordPress if not already installed
+if ! wp core is-installed --allow-root --path="$WP_PATH"; then
+	echo "Installing WordPress..."
+
+	wp core install \
+		--allow-root \
+		--path="$WP_PATH" \
+		--url="https://${DOMAIN_NAME}" \
+		--title="$WP_TITLE" \
+		--admin_user="$WP_ADMIN_USER" \
+		--admin_password="$WP_ADMIN_PASSWORD" \
+		--admin_email="$WP_ADMIN_EMAIL"
+
+	wp user create \
+		"$WP_USER" \
+		"$WP_USER_EMAIL" \
+		--user_pass="$WP_USER_PASSWORD" \
+		--allow-root \
+		--path="$WP_PATH"
+
+	echo "WordPress installation completed."
+else
+	echo "WordPress already installed."
+fi
+
 echo "Starting PHP-FPM..."
 
 #php-fpm prende il posto dello script bash come processo principale
