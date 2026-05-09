@@ -56,5 +56,14 @@ This approach follows the project requirement of building custom images and prov
 
 <!-- Documentazione + come hai usato AI -->
 * Quick introduction to Docker
-https://youtu.be/Gjnup-PuquQ?si=efLqPMeDoFO7kQZR
+    https://youtu.be/Gjnup-PuquQ?si=efLqPMeDoFO7kQZR
+
+## AI Usage
+
+Artificial intelligence tools were used as learning support for:
+- understanding Docker concepts
+- debugging configuration issues
+- improving documentation
+
+All code, configurations, and architecture decisions were reviewed, tested, and understood before integration into the project.
 
