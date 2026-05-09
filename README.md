@@ -1,4 +1,4 @@
-*This project has been created as part of the 42 curriculum by scarlucc.*
+*This project has been created as part of the 42 curriculum by scarlucc*
 
 # Inception
 
@@ -32,10 +32,59 @@ All containers are connected through a custom Docker network (`inception_network
 * WordPress communicates with MariaDB on port 3306.
 
 
-## Instructions (to be completed)
+## Instructions
 
-<!-- Quando scrivo docker compose -->
-<!-- Come buildare e avviare il progetto -->
+### Build and start the infrastructure
+
+```bash
+make
+```
+
+or manually:
+
+```bash
+docker compose -f srcs/docker-compose.yml up --build
+```
+
+### Stop containers
+
+```bash
+make down
+```
+
+### Remove containers and Docker volumes
+
+```bash
+make clean
+```
+
+### Completely reset the project
+
+```bash
+make fclean
+```
+
+### Rebuild everything
+
+```bash
+make re
+```
+
+### Access the website
+
+Open:
+
+```text
+https://<login>.42.fr
+```
+
+Example:
+
+```text
+https://scarlucc.42.fr
+```
+
+The domain must be mapped inside `/etc/hosts`.
 
 ## Technical Choices
 
@@ -45,25 +94,70 @@ MariaDB was installed manually using a Debian base image instead of using a preb
 This approach follows the project requirement of building custom images and provides a deeper understanding of how database services are configured.
 
 
-## Comparisons (to be completed)
+## Comparisons
 
-* Virtual Machines vs Docker
-* Secrets vs Environment Variables
-* Docker Network vs Host Network
-* Docker Volumes vs Bind Mounts
+### Virtual Machines vs Docker
 
-## Resources (to be completed)
+Virtual machines emulate a complete operating system and require more resources.
+Docker containers share the host kernel and are lighter, faster, and easier to deploy.
 
-<!-- Documentazione + come hai usato AI -->
-* Quick introduction to Docker
-    https://youtu.be/Gjnup-PuquQ?si=efLqPMeDoFO7kQZR
+### Secrets vs Environment Variables
+
+Environment variables are simple and convenient for development.
+Docker secrets provide a more secure way to manage sensitive data such as passwords.
+
+### Docker Network vs Host Network
+
+Docker bridge networks isolate containers while still allowing communication between services.
+Host networking removes isolation and is forbidden in this project.
+
+### Docker Volumes vs Bind Mounts
+
+Docker volumes are managed by Docker itself.
+Bind mounts directly map host directories into containers.
+
+This project uses bind mounts to comply with the requirement of storing persistent data in:
+
+`/home/<login>/data/`
+
+## Resources
+
+### Docker documentation
+
+https://docs.docker.com/
+
+### Docker Compose documentation
+
+https://docs.docker.com/compose/
+
+### NGINX documentation
+
+https://nginx.org/en/docs/
+
+### MariaDB documentation
+
+https://mariadb.org/documentation/
+
+### WordPress documentation
+
+https://developer.wordpress.org/
+
+### PHP-FPM documentation
+
+https://www.php.net/manual/en/install.fpm.php
+
+### Learning resources
+
+Quick introduction to Docker:
+https://youtu.be/Gjnup-PuquQ?si=efLqPMeDoFO7kQZR
 
 ## AI Usage
 
 Artificial intelligence tools were used as learning support for:
+
 - understanding Docker concepts
 - debugging configuration issues
 - improving documentation
+- understanding networking and container communication
 
 All code, configurations, and architecture decisions were reviewed, tested, and understood before integration into the project.
-

@@ -2,7 +2,20 @@
 
 ## Prerequisites
 
-<!-- Docker, Docker Compose -->
+The following tools are required:
+
+- Docker
+- Docker Compose
+- GNU Make
+- Linux environment or virtual machine
+
+To verify installation:
+
+```bash
+docker --version
+docker compose version
+make --version
+```
 
 ## Project Setup
 .
@@ -78,21 +91,80 @@ Each service is built from its own Dockerfile located in:
 * `requirements/wordpress/`
 * `requirements/mariadb/`
 
-To build and start the project:
+## Makefile Usage
 
-```
-docker-compose up --build
+The Makefile simplifies project management.
+
+### Start the infrastructure
+
+```bash
+make
 ```
 
-To stop the project:
+### Build and start containers
 
+```bash
+make up
 ```
-docker-compose down
+
+### Stop containers
+
+```bash
+make down
+```
+
+### Remove containers and Docker volumes
+
+```bash
+make clean
+```
+
+### Remove persistent data and rebuild everything
+
+```bash
+make fclean
+make re
 ```
 
 ## Managing Containers
 
-<!-- docker commands -->
+### View running containers
+
+```bash
+docker ps
+```
+
+### View compose services
+
+```bash
+docker compose ps
+```
+
+### View logs
+
+```bash
+docker logs <container_name>
+```
+
+Examples:
+
+```bash
+docker logs nginx
+docker logs wordpress
+docker logs mariadb
+```
+
+### Access a container
+
+```bash
+docker exec -it <container_name> bash
+```
+
+Example:
+
+```bash
+docker exec -it wordpress bash
+```
 
 ## Data Persistence
 
@@ -162,6 +234,46 @@ Each service has its own directory containing everything needed to build its Doc
 * `Dockerfile`: builds the WordPress + PHP-FPM image.
 * `conf/`: PHP and WordPress configuration.
 * `tools/`: initialization scripts.
+
+
+## NGINX Configuration
+
+NGINX acts as the only entry point to the infrastructure and serves the website over HTTPS.
+
+It is configured to:
+
+- Listen on port 443 (HTTPS only)
+- Use a self-signed SSL certificate
+- Serve files from the WordPress volume
+- Forward PHP requests to the WordPress container via FastCGI
+
+### FastCGI Communication
+
+NGINX communicates with WordPress using:
+```
+fastcgi_pass wordpress:9000;
+```
+
+This works because all containers are on the same Docker network, where:
+
+- `wordpress` is the service name
+- Docker provides automatic DNS resolution
+
+### Shared Volume
+
+NGINX and WordPress share the same volume:
+```
+/var/www/html
+```
+
+This allows:
+
+- WordPress to write files
+- NGINX to serve them
+
+Without this shared volume, the website would not work.
+
+---
 
 ### WordPress Service
 

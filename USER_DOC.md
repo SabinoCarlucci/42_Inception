@@ -22,45 +22,6 @@ All services run in separate Docker containers and communicate through a private
 
 ---
 
-## NGINX Configuration
-
-NGINX acts as the only entry point to the infrastructure and serves the website over HTTPS.
-
-It is configured to:
-
-- Listen on port 443 (HTTPS only)
-- Use a self-signed SSL certificate
-- Serve files from the WordPress volume
-- Forward PHP requests to the WordPress container via FastCGI
-
-### FastCGI Communication
-
-NGINX communicates with WordPress using:
-```
-fastcgi_pass wordpress:9000;
-```
-
-This works because all containers are on the same Docker network, where:
-
-- `wordpress` is the service name
-- Docker provides automatic DNS resolution
-
-### Shared Volume
-
-NGINX and WordPress share the same volume:
-```
-/var/www/html
-```
-
-This allows:
-
-- WordPress to write files
-- NGINX to serve them
-
-Without this shared volume, the website would not work.
-
----
-
 ## Using the Makefile
 
 The project can be managed using the Makefile.
@@ -184,7 +145,9 @@ https://scarlucc.42.fr
 
 Make sure your domain is correctly mapped to your local IP (via `/etc/hosts`).
 
-The website is served exclusively over HTTPS using a self-signed TLS certificate generated inside the NGINX container.
+## HTTPS and SSL/TLS
+
+The website is served exclusively over HTTPS using a self-signed TLS certificate generated automatically inside the NGINX container.
 
 The browser may display a warning because the certificate is self-signed. This is expected.
 
