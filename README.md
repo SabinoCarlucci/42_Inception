@@ -151,8 +151,15 @@ https://www.php.net/manual/en/install.fpm.php
 #### Quick introduction to Docker
   https://youtu.be/Gjnup-PuquQ?si=efLqPMeDoFO7kQZR
 
+#### More in depth guide to Docker
+  https://www.youtube.com/watch?v=pg19Z8LL06w
+
+#### Even more in depth
+  https://www.youtube.com/watch?v=3c-iBn73dDE
+
 #### Project guide
   https://dev.to/alejiri/docker-nginx-wordpress-mariadb-tutorial-inception42-1eok
+
 
 ## AI Usage
 
