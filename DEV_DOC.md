@@ -243,9 +243,101 @@ NGINX acts as the only entry point to the infrastructure and serves the website 
 It is configured to:
 
 - Listen on port 443 (HTTPS only)
-- Use a self-signed SSL certificate
+- Use a self-signed SSL certificate (made with OpenSSL)
 - Serve files from the WordPress volume
 - Forward PHP requests to the WordPress container via FastCGI
+
+### OpenSSl
+
+OpenSSL is a widely-used, open-source software library and toolkit that provides cryptographic functions to secure communications over computer networks. It implements the SSL (Secure Sockets Layer) and TLS (Transport Layer Security) protocols, which enable encrypted, private connections for web servers, VPNs, and applications.
+
+### SSL/TLS Certificate
+
+NGINX uses a self-signed SSL/TLS certificate to provide encrypted HTTPS connections.
+
+The certificate and private key are generated during the Docker image build using OpenSSL.
+
+Generation command used in the Dockerfile:
+
+```bash
+openssl req -x509 -nodes -days 365 \
+-newkey rsa:2048 \
+-keyout /etc/nginx/ssl/nginx.key \
+-out /etc/nginx/ssl/nginx.crt
+```
+
+Generated files:
+
+```bash
+/etc/nginx/ssl/nginx.crt
+/etc/nginx/ssl/nginx.key
+```
+
+* nginx.crt: public certificate sent to clients
+* nginx.key: private key used for TLS encryption
+
+#### Verifying HTTPS and TLS
+
+To verify that HTTPS and TLS are working correctly:
+
+```bash
+openssl s_client -connect scarlucc.42.fr:443
+```
+
+Expected output should contain:
+
+```bash
+Protocol  : TLSv1.2
+```
+
+or:
+
+```bash
+Protocol  : TLSv1.3
+```
+
+This confirms that encrypted TLS communication is active.
+
+The output will also display:
+
+```bash
+verify error:num=18:self-signed certificate
+```
+
+This is expected because the certificate is self-signed and not issued by a trusted Certificate Authority (CA).
+
+Inspecting the Certificate
+
+To inspect the certificate from inside the NGINX container:
+
+```bash
+docker exec -it nginx bash
+cd /etc/nginx/ssl
+openssl x509 -in nginx.crt -text -noout
+```
+
+This command displays:
+
+* certificate subject
+* issuer
+* validity dates
+* encryption algorithm
+* public key information
+
+
+#### HTTPS-only Access
+
+NGINX is configured to listen only on port 443.
+
+HTTP access on port 80 is intentionally disabled to comply with project requirements.
+
+This behavior is defined in the NGINX configuration file by using:
+
+```nginx
+listen 443 ssl;
+```
+
+and by not defining any server block listening on port 80.
 
 ### FastCGI Communication
 
