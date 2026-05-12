@@ -148,8 +148,11 @@ https://www.php.net/manual/en/install.fpm.php
 
 ### Learning resources
 
-Quick introduction to Docker:
-https://youtu.be/Gjnup-PuquQ?si=efLqPMeDoFO7kQZR
+#### Quick introduction to Docker
+  https://youtu.be/Gjnup-PuquQ?si=efLqPMeDoFO7kQZR
+
+#### Project guide
+  https://dev.to/alejiri/docker-nginx-wordpress-mariadb-tutorial-inception42-1eok
 
 ## AI Usage
 
@@ -161,3 +164,7 @@ Artificial intelligence tools were used as learning support for:
 - understanding networking and container communication
 
 All code, configurations, and architecture decisions were reviewed, tested, and understood before integration into the project.
+
+### Edit
+
+Find .env file here: https://github.com/SabinoCarlucci/42_Inception_env
